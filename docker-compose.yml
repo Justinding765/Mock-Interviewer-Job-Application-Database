@@ -1,0 +1,17 @@
+version: '3'
+services:
+  frontend:
+    image: public.ecr.aws/h3h2q2t3/job_search:frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    image: public.ecr.aws/h3h2q2t3/job_search:backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: "5000"
+      Mongo_URI: "mongodb+srv://justinding7575:123@mernapp.8g6peo0.mongodb.net/?retryWrites=true&w=majority"
+      OPEN_AI_KEY: "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"
