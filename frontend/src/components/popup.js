@@ -52,7 +52,6 @@ const Popup = ({ handleClose, handleData}) => {
          body: JSON.stringify({interviewType: type, number: numQuestions})
        });
        const data = await res.json();
-       console.log(data)
        setQuestions(data.data)
     }
     function handleSubmit(){

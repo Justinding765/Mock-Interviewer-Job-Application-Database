@@ -24,12 +24,29 @@ export default function Practice() {
     useReactMediaRecorder({ video: true });
   const [isOpen, setIsOpen] = useState(false);
   const [enable, setEnable] = useState(true);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [textValue, setTextValue] = useState('');
   //whether or not to show playback video. Either video is showing or the stream is showing, but not both
   const [video, setVideo] = useState(false)
   const [stream, setStream] = useState(false)
   const videoRef = useRef(null);
   const [interview_data, setData] = useState({});
   const utterance = new SpeechSynthesisUtterance()
+  const handleOpenPopup = () => {
+
+    setIsOpen2(true);
+  };
+
+  const handleClosePopup = () => {
+
+    setIsOpen2(false);
+  };
+  const modalStyles = {
+    content: {
+      margin: '0 auto', // Center the modal horizontally
+      maxHeight: '600px'
+    },
+  };
   const showSuccessAlert = () => {
     Swal.fire({
       icon: 'success',
@@ -54,9 +71,12 @@ export default function Practice() {
     if(utterance){
       cancelSpeech()
     }
-    utterance.text = interview_data.Questions;
+    utterance.text = "Hello, it's great to meet you. Thank you for taking the time to speak with us today " +
+    "We're really excited to learn more about your background, experience, and skills. Without further ado, let's begin\n" +
+    interview_data.Questions + "\nThank you for taking the time to interview with us today. We appreciate your interest in this position " +
+    "and your thoughtful responses to our questions. Do you have any questions for us before we wrap up?";;
 
-    window.speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak("");
   }
 
   
@@ -96,7 +116,6 @@ export default function Practice() {
     },[click])
 
     utterance.addEventListener('boundary', (event) => {
-      console.log()
       if (event.charIndex-1 > 0 && interview_data.Questions[event.charIndex-1] == "\n") {
         pauseSpeech()
         pauseRecording();
@@ -250,9 +269,7 @@ export default function Practice() {
       console.error(error);
     }
   };
-  
-   
- 
+  console.log(interview_data.Questions)
   return (
     <div>
       <div>
@@ -267,18 +284,25 @@ export default function Practice() {
             return (
               <div>
                 <NavBar />
-                  <Modal isOpen={isOpen} >
+                  <Modal isOpen={isOpen} style={modalStyles} >
                     <Popup  handleData={handleData} handleClose={toggleModal}/>
                   </Modal>
                   <Container >
-                    {/* <div style={{color:'white'}}>{status}</div> */}
+                    
                       <div className='Stream'>
+                        <Row>
+                          <Col>
+                            <Button variant="info" className="Interivew_Info" onClick={handleOpenPopup}>
+                              <i className="fas fa-plus"></i> Interview Questions
+                            </Button>
+                          </Col>
+                        </Row>
                         {(status === 'stopped' && video===true) && <FinalVid ref={videoRef}/>}
                         {enable && stream && <VideoPreview stream={previewStream}/>}
                         {!(stream || video) ? (<Camera />): (<div></div>)}
                         <div className='Button-Section'>
                           <Row>
-                            
+                          
                               {(status==='idle')&& 
                               <Col><Button onClick={() => {startRecording(); showVid(false); showStream(true);handleSpeech()}} variant="danger" className="play-button">
                                 <i className="fas fa-play">Start Recording</i>
@@ -301,11 +325,18 @@ export default function Practice() {
 
                         </div>
                     </div>
-                    <div id="speech">
-                  
+                    <div>
+                      <Modal isOpen={isOpen2} style={modalStyles}>
+                        <div>
+                          <pre>{interview_data.Questions}</pre>
+                        </div>
+                        <Button onClick={handleClosePopup} variant="danger">
+                          Close
+                        </Button>
+                      </Modal>
                     </div>
-
-</Container>
+                </Container>
+                
               </div>
             );
           }}

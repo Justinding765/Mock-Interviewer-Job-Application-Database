@@ -10,19 +10,22 @@ const configuration = new Configuration({
   const openai = new OpenAIApi(configuration);
 const getSummary = async(req,res) => {
     try {
-          const response = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: `DO NOT remove any HTML tags in the req.body.data\n\n Summarize based on the headings that appear: "Duties will include", "Requirements", "about", "about the company", "What you bring to the table:", "How we are hiring for this role", ", "About the job", "skills", "benifits", "technical skills", "Your Role and Responsibilities".\n\n`
-          + (req.body.data) + '\n\n\nA:',
-          temperature: 0.7,
-          max_tokens: 2048,
-          top_p: 1.0,
-          frequency_penalty: 0.0,
-          presence_penalty: 1,
+          const response = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                "role": "user",
+                "content":  `Summarize each section. Could you please divide the summary into sections with headers` 
+                + `"`+ (req.body.data) + `"`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 1024,
         });
+        console.log(response.data.choices[0])
         return res.status(200).json({
           success: true,
-          data: response.data.choices[0].text,
+          data: response.data.choices[0].message.content,
         });
       } catch (error) {
         return res.status(400).json({
@@ -38,23 +41,21 @@ const getSummary = async(req,res) => {
   const getInterviewQuestions = async(req,res) => {
     
       try {
-          const response = await openai.createCompletion({
-              model: "text-davinci-003",
-              prompt: "Create a list of " + req.body.number + 
-              " questions for a "+ req.body.interviewType + " position." +
-              "Ensure that they are technical questions and test concepts.",
+          const response = await openai.createChatCompletion({
+              model: "gpt-3.5-turbo",
+              messages: [
+                {
+                  "role": "user",
+                  "content": "Create a list of " + req.body.number + 
+                  " questions for a "+ req.body.interviewType + " position." +
+                  "Ensure that they are technical questions and test concepts and there is an extra newline between each question"
+              }
+            ],
               temperature: 0.5,
               max_tokens: 2000,
-              top_p: 1.0,
-              frequency_penalty: 0.0,
-              presence_penalty: 0.0,
           });
-          var temp = "Hello, it's great to meet you. Thank you for taking the time to speak with us today " +
-          "We're really excited to learn more about your background, experience, and skills. Without further a do, let's begin\n"+ 
-          response.data.choices[0].text.replace(/^\s+/, '') + "\n" +
-          "Thank you for taking the time to interview with us today. We appreciate your interest in this position"  + 
-          "and your thoughtful responses to our questions. Do you have any questions for us before we wrap up?"
-        
+          var temp = response.data.choices[0].message.content.replace(/^\s+/, '') 
+          
           return res.status(200).json({
             success: true,
             data: temp,

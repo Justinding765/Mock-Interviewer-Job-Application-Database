@@ -192,6 +192,12 @@ nav.navbar .navbar-nav a.nav-link.navbar-link.active {
 }
 
 /************ Practice Page Css ************/
+
+.Interivew_Info{
+  position: relative;
+  top: 35%;
+  left: 38%;
+}
 .Stream {
   position: relative;
   margin: 30px;
