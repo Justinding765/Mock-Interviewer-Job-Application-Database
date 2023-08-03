@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const os = require('os');
 
 const mongoose = require("mongoose");
 const multer = require("multer");
@@ -159,6 +160,6 @@ app.post("/api/media/upload", upload.fields([{ name: 'video', maxCount: 1 }, { n
 //connect to db
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Application live on localhost:${process.env.PORT}`);
+  console.log(`Application live on http://${os.hostname()}:${PORT}`);
 });
 process.env

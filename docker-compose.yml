@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 services:
   frontend:
     image: justinding765/interviewer:frontend
@@ -14,4 +14,4 @@ services:
     environment:
       PORT: "5000"
       Mongo_URI: "mongodb+srv://justinding7575:123@mernapp.8g6peo0.mongodb.net/?retryWrites=true&w=majority"
-      OPEN_AI_KEY: "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"
+      OPEN_AI_KEY: "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"

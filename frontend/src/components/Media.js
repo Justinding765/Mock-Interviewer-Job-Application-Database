@@ -75,7 +75,6 @@ export default function Replays() {
       }
 
       function handleDelete(){
-        console.log(images[i])
         fetch("api/media/delete_video/"+images[i].filename, {
             method: 'DELETE',
         })
@@ -120,21 +119,21 @@ export default function Replays() {
         <div >
             <NavBar/>    
             <Container id="gallery">
-            <Row className="custom-row">
-            
-            {images.length > 0 && images.map((image, index) => (
-                <Col key={index} xl={3} md={6} sm={12} xs={12} style={{marginBottom: "20px"}}>
-                    <div className="thumbnail-container" onClick={() => handleClick(index)} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
-                        <img  className="thumbnail"src={image.dataUrl} alt={image.filename} thumbnail 
-                        />
-                        {hoveredIndex === index && (
-                            <div id="Resume_button" title="play"><Resume_button/></div>
-                        )}
-                    </div>
-                </Col>
-            ))}
-            </Row>
-        </Container>
+                <Row className="custom-row">            
+                    {images.length > 0 && images.map((image, index) => (
+                        <Col key={index} xl={3} md={6} sm={12} xs={12} style={{marginBottom: "20%"}}>
+                            <div className="thumbnail-container" onClick={() => handleClick(index)} onMouseEnter={() => handleMouseEnter(index)} onMouseLeave={handleMouseLeave}>
+                                <img  className="thumbnail"src={image.dataUrl} alt={image.filename} thumbnail 
+                                />
+                                {hoveredIndex === index && (
+                                    <div id="Resume_button" title="play"><Resume_button/></div>
+                                )}
+                                <h5>{image.filename}</h5>
+                            </div>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
             <Modal id="modal" isOpen={isOpen} onRequestClose={toggleModal}>
                 <ModalHeader> 
                     <button type="button" id="btn" onClick={toggleModal}><div>x</div></button>

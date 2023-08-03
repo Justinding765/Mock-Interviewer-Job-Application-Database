@@ -421,6 +421,16 @@ nav.navbar .navbar-nav a.nav-link.navbar-link.active {
   cursor: pointer;
   box-shadow: 0px 0px 10px 3px white;
 }
+
+.thumbnail-container h5 {
+  color: white;
+  transition: text-shadow 0.3s ease; /* For smooth transition of glow */
+  text-align: center;
+}
+
+.thumbnail-container h5:hover {
+  text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); /* Adds glow effect on hover */
+}
 #Resume_button{
   position: absolute;
   top: 50%;

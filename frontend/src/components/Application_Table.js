@@ -14,6 +14,7 @@ const Application_Table = () => {
             method: 'GET',
         })
         .then(response => { 
+            console.log("responses")
             return response.json()})
         .then(data => {
             setApplications(data.data)
