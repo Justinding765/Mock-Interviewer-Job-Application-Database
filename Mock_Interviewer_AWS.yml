@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
+
   AwsAcmCertificate:
     Type: 'AWS::CertificateManager::Certificate'
     Properties: 
@@ -201,7 +202,6 @@ Resources:
       IpProtocol: TCP
       ToPort: 5000
     Type: AWS::EC2::SecurityGroupIngress
-
   LoadBalancerIngress443:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
