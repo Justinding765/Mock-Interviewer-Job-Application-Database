@@ -398,7 +398,6 @@ Resources:
         Value: frontend
     Type: AWS::IAM::Role
 
-    
   LoadBalancer:
     Properties:
       LoadBalancerAttributes:
