@@ -217,6 +217,7 @@ Resources:
       GroupDescription: mock-interviewer-and-job-application-database Security Group
         for default network
       Tags:
+      
       - Key: com.docker.compose.project
         Value: mock-interviewer-and-job-application-database
       - Key: com.docker.compose.network
