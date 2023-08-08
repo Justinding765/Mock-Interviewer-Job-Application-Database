@@ -6,7 +6,7 @@ phases:
       python: 3.8
   build:
     commands:
-      - echo "Build commands go here"
+      - echo "Build!"
   post_build:
     commands:
       - echo "Any post build actions go here"
