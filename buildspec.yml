@@ -16,8 +16,10 @@ phases:
       - echo "Logging in to Docker Hub..."
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - echo "Building frontend Docker image..."
+      - ls
       - docker build -t $FRONTEND_IMAGE ./frontend
       - echo "Building backend Docker image..."
+  
       - docker build -t $BACKEND_IMAGE ./backend
 
   build:
