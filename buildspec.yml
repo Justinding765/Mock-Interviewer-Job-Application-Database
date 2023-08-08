@@ -1,16 +1,35 @@
 version: 0.2
 
+env:
+  variables:
+    FRONTEND_IMAGE: "justinding765/interviewer:frontend"
+    BACKEND_IMAGE: "justinding765/interviewer:backend"
+  # Use 'secrets-manager' to store your Docker Hub credentials securely.
+  secrets-manager:
+    DOCKERHUB_USERNAME: "justinding765"   # Name of the secret key for username in Secrets Manager
+    DOCKERHUB_PASSWORD: "3!tQ>,pj^s$QT/SZ"   # Name of the secret key for password in Secrets Manager
+
 phases:
-  install:
-    runtime-versions:
-      python: 3.8
+  pre_build:
+    commands:
+      - echo "Logging in to Docker Hub..."
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+      - echo "Building frontend Docker image..."
+      - docker build -t $FRONTEND_IMAGE ./frontend
+      - echo "Building backend Docker image..."
+      - docker build -t $BACKEND_IMAGE ./backend
+
   build:
     commands:
-      - echo "Build!"
+      - echo "Pushing frontend Docker image to Docker Hub..."
+      - docker push $FRONTEND_IMAGE
+      - echo "Pushing backend Docker image to Docker Hub..."
+      - docker push $BACKEND_IMAGE
+
   post_build:
     commands:
-      - echo "Any post build actions go here"
+      - echo "Build and push completed."
 
 artifacts:
   files:
-    - '**/*'
+    - test.yml
