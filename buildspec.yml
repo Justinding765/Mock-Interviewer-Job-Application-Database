@@ -6,8 +6,9 @@ env:
     BACKEND_IMAGE: "justinding765/interviewer:backend"
   # Use 'secrets-manager' to store your Docker Hub credentials securely.
   secrets-manager:
-    DOCKERHUB_USERNAME: "justinding765"   # Name of the secret key for username in Secrets Manager
-    DOCKERHUB_PASSWORD: "3!tQ>,pj^s$QT/SZ"   # Name of the secret key for password in Secrets Manager
+    DOCKERHUB_USERNAME: DockerHubCredentials:username
+    DOCKERHUB_PASSWORD: DockerHubCredentials:password
+
 
 phases:
   pre_build:
