@@ -1,0 +1,390 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  AwsAcmCertificate:
+    Type: 'AWS::CertificateManager::Certificate'
+    Properties: 
+      DomainName: 'justinming765.site' # Your primary domain name
+      DomainValidationOptions: 
+        - DomainName: 'justinming765.site' # Domain to be validated
+          HostedZoneId: 'Z07579781BIYS8393SNCD'
+      # Route 53 Hosted Zone ID
+      SubjectAlternativeNames: 
+        - '*.justinming765.site'
+      ValidationMethod: 'DNS'
+  BackendService:
+    DependsOn:
+    - BackendTCP5000Listener
+    Properties:
+      Cluster:
+        Fn::GetAtt:
+        - Cluster
+        - Arn
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DeploymentController:
+        Type: ECS
+      DesiredCount: 1
+      LaunchType: FARGATE
+      LoadBalancers:
+      - ContainerName: backend
+        ContainerPort: 5000
+        TargetGroupArn:
+          Ref: BackendTCP5000TargetGroup
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+          - Ref: DefaultNetwork
+          Subnets:
+          - subnet-06e34cb1fccd7382a
+          - subnet-0c59299d1c8485c85
+          - subnet-0b2c99eaadc5a04b1
+      PlatformVersion: 1.4.0
+      PropagateTags: SERVICE
+      SchedulingStrategy: REPLICA
+      ServiceRegistries:
+      - RegistryArn:
+          Fn::GetAtt:
+          - BackendServiceDiscoveryEntry
+          - Arn
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      - Key: com.docker.compose.service
+        Value: backend
+      TaskDefinition:
+        Ref: BackendTaskDefinition
+    Type: AWS::ECS::Service
+  BackendServiceDiscoveryEntry:
+    Properties:
+      Description: '"backend" service discovery entry in Cloud Map'
+      DnsConfig:
+        DnsRecords:
+        - TTL: 60
+          Type: A
+        RoutingPolicy: MULTIVALUE
+      HealthCheckCustomConfig:
+        FailureThreshold: 1
+      Name: backend
+      NamespaceId:
+        Ref: CloudMap
+    Type: AWS::ServiceDiscovery::Service
+  BackendTCP5000Listener:
+    Properties:
+      DefaultActions:
+      - ForwardConfig:
+          TargetGroups:
+          - TargetGroupArn:
+              Ref: BackendTCP5000TargetGroup
+        Type: forward
+      LoadBalancerArn:
+        Ref: LoadBalancer
+      Port: 5000
+      Protocol: TCP
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  BackendTCP5000TargetGroup:
+    Properties:
+      Port: 5000
+      Protocol: TCP
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      TargetType: ip
+      VpcId: vpc-01e53c315e119ea55
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  BackendTaskDefinition:
+    Properties:
+      ContainerDefinitions:
+      - Command:
+        - ca-central-1.compute.internal
+        - mock-interviewer-and-job-application-database.local
+        Essential: false
+        Image: docker/ecs-searchdomain-sidecar:1.0
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group:
+              Ref: LogGroup
+            awslogs-region:
+              Ref: AWS::Region
+            awslogs-stream-prefix: mock-interviewer-and-job-application-database
+        Name: Backend_ResolvConf_InitContainer
+      - DependsOn:
+        - Condition: SUCCESS
+          ContainerName: Backend_ResolvConf_InitContainer
+        Environment:
+        - Name: Mongo_URI
+          Value: mongodb+srv://justinding7575:123@mernapp.8g6peo0.mongodb.net/?retryWrites=true&w=majority
+        - Name: OPEN_AI_KEY
+          Value: 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
+        - Name: PORT
+          Value: "5000"
+        Essential: true
+        Image: docker.io/justinding765/interviewer:backend
+        LinuxParameters: {}
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group:
+              Ref: LogGroup
+            awslogs-region:
+              Ref: AWS::Region
+            awslogs-stream-prefix: mock-interviewer-and-job-application-database
+        Name: backend
+        PortMappings:
+        - ContainerPort: 5000
+          HostPort: 5000
+          Protocol: tcp
+      Cpu: "1024"
+      ExecutionRoleArn:
+        Ref: BackendTaskExecutionRole
+      Family: mock-interviewer-and-job-application-database-backend
+      Memory: 2GB
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+      - FARGATE
+    Type: AWS::ECS::TaskDefinition
+  BackendTaskExecutionRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Condition: {}
+          Effect: Allow
+          Principal:
+            Service: ecs-tasks.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      - Key: com.docker.compose.service
+        Value: backend
+    Type: AWS::IAM::Role
+  CloudMap:
+    Properties:
+      Description: Service Map for Docker Compose project mock-interviewer-and-job-application-database
+      Name: mock-interviewer-and-job-application-database.local
+      Vpc: vpc-01e53c315e119ea55
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+  Cluster:
+    Properties:
+      ClusterName: mock-interviewer-and-job-application-database
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+    Type: AWS::ECS::Cluster
+  Default3000Ingress:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: frontend:3000/tcp on default network
+      FromPort: 3000
+      GroupId:
+        Ref: DefaultNetwork
+      IpProtocol: TCP
+      ToPort: 3000
+    Type: AWS::EC2::SecurityGroupIngress
+  Default5000Ingress:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: backend:5000/tcp on default network
+      FromPort: 5000
+      GroupId:
+        Ref: DefaultNetwork
+      IpProtocol: TCP
+      ToPort: 5000
+    Type: AWS::EC2::SecurityGroupIngress
+  DefaultNetwork:
+    Properties:
+      GroupDescription: mock-interviewer-and-job-application-database Security Group
+        for default network
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      - Key: com.docker.compose.network
+        Value: mock-interviewer-and-job-application-database_default
+      VpcId: vpc-01e53c315e119ea55
+    Type: AWS::EC2::SecurityGroup
+  DefaultNetworkIngress:
+    Properties:
+      Description: Allow communication within network default
+      GroupId:
+        Ref: DefaultNetwork
+      IpProtocol: "-1"
+      SourceSecurityGroupId:
+        Ref: DefaultNetwork
+    Type: AWS::EC2::SecurityGroupIngress
+  FrontendService:
+    DependsOn:
+    - FrontendTCP3000Listener
+    - BackendService
+    Properties:
+      Cluster:
+        Fn::GetAtt:
+        - Cluster
+        - Arn
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DeploymentController:
+        Type: ECS
+      DesiredCount: 1
+      LaunchType: FARGATE
+      LoadBalancers:
+      - ContainerName: frontend
+        ContainerPort: 3000
+        TargetGroupArn:
+          Ref: FrontendTCP3000TargetGroup
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+          - Ref: DefaultNetwork
+          Subnets:
+          - subnet-06e34cb1fccd7382a
+          - subnet-0c59299d1c8485c85
+          - subnet-0b2c99eaadc5a04b1
+      PlatformVersion: 1.4.0
+      PropagateTags: SERVICE
+      SchedulingStrategy: REPLICA
+      ServiceRegistries:
+      - RegistryArn:
+          Fn::GetAtt:
+          - FrontendServiceDiscoveryEntry
+          - Arn
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      - Key: com.docker.compose.service
+        Value: frontend
+      TaskDefinition:
+        Ref: FrontendTaskDefinition
+    Type: AWS::ECS::Service
+  FrontendServiceDiscoveryEntry:
+    Properties:
+      Description: '"frontend" service discovery entry in Cloud Map'
+      DnsConfig:
+        DnsRecords:
+        - TTL: 60
+          Type: A
+        RoutingPolicy: MULTIVALUE
+      HealthCheckCustomConfig:
+        FailureThreshold: 1
+      Name: frontend
+      NamespaceId:
+        Ref: CloudMap
+    Type: AWS::ServiceDiscovery::Service
+  FrontendTCP3000Listener:
+    Properties:
+      DefaultActions:
+      - ForwardConfig:
+          TargetGroups:
+          - TargetGroupArn:
+              Ref: FrontendTCP3000TargetGroup
+        Type: forward
+      LoadBalancerArn:
+        Ref: LoadBalancer
+      Port: 3000
+      Protocol: TCP
+    Type: AWS::ElasticLoadBalancingV2::Listener
+  
+
+
+  FrontendTCP3000TargetGroup:
+    Properties:
+      Port: 3000
+      Protocol: TCP
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      TargetType: ip
+      VpcId: vpc-01e53c315e119ea55
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  FrontendTaskDefinition:
+    Properties:
+      ContainerDefinitions:
+      - Command:
+        - ca-central-1.compute.internal
+        - mock-interviewer-and-job-application-database.local
+        Essential: false
+        Image: docker/ecs-searchdomain-sidecar:1.0
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group:
+              Ref: LogGroup
+            awslogs-region:
+              Ref: AWS::Region
+            awslogs-stream-prefix: mock-interviewer-and-job-application-database
+        Name: Frontend_ResolvConf_InitContainer
+      - DependsOn:
+        - Condition: SUCCESS
+          ContainerName: Frontend_ResolvConf_InitContainer
+        Essential: true
+        Image: docker.io/justinding765/interviewer:frontend
+        LinuxParameters: {}
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group:
+              Ref: LogGroup
+            awslogs-region:
+              Ref: AWS::Region
+            awslogs-stream-prefix: mock-interviewer-and-job-application-database
+        Name: frontend
+        PortMappings:
+        - ContainerPort: 3000
+          HostPort: 3000
+          Protocol: tcp
+      Cpu: "1024"
+      ExecutionRoleArn:
+        Ref: FrontendTaskExecutionRole
+      Family: mock-interviewer-and-job-application-database-frontend
+      Memory: 2GB
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+      - FARGATE
+    Type: AWS::ECS::TaskDefinition
+  FrontendTaskExecutionRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Condition: {}
+          Effect: Allow
+          Principal:
+            Service: ecs-tasks.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      - Key: com.docker.compose.service
+        Value: frontend
+    Type: AWS::IAM::Role
+  LoadBalancer:
+    Properties:
+      LoadBalancerAttributes:
+      - Key: load_balancing.cross_zone.enabled
+        Value: "true"
+      Scheme: internet-facing
+      Subnets:
+      - subnet-06e34cb1fccd7382a
+      - subnet-0c59299d1c8485c85
+      - subnet-0b2c99eaadc5a04b1
+      Tags:
+      - Key: com.docker.compose.project
+        Value: mock-interviewer-and-job-application-database
+      Type: network
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  LogGroup:
+    Properties:
+      LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
+    Type: AWS::Logs::LogGroup
