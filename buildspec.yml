@@ -36,4 +36,3 @@ phases:
 artifacts:
   files:
     - test.yml
-    
