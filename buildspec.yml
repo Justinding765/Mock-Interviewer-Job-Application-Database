@@ -33,4 +33,4 @@ phases:
 
 artifacts:
   files:
-    - test.yml
+    - Mock_Interviewer_AWS.yml

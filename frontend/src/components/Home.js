@@ -15,7 +15,7 @@ const Home = () =>{
                     <h1>Features</h1><br/>
                     <Row >
                     <Col md={3} className="Feature">
-                        <h2 >Mock Interview</h2>
+                        <h2 >Mock Interviews</h2>
                         <p>Practice your interview skills with our mock interview feature! Use our AI powered Interview Generator to 
                             Generate your own custom Interview. The User can then conduct their interview with Text-to-Speech
                             that acts as the Interviewer and record their interview. At the end the User can save their recording

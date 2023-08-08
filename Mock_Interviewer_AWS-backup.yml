@@ -165,8 +165,6 @@ Resources:
       - Key: com.docker.compose.service
         Value: backend
     Type: AWS::IAM::Role
-    
-
   CloudMap:
     Properties:
       Description: Service Map for Docker Compose project mock-interviewer-and-job-application-database
@@ -190,7 +188,6 @@ Resources:
       IpProtocol: TCP
       ToPort: 3000
     Type: AWS::EC2::SecurityGroupIngress
-
   Default5000Ingress:
     Properties:
       CidrIp: 0.0.0.0/0
@@ -201,17 +198,6 @@ Resources:
       IpProtocol: TCP
       ToPort: 5000
     Type: AWS::EC2::SecurityGroupIngress
-    
-  LoadBalancerIngress443:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      CidrIp: 0.0.0.0/0
-      Description: Allow HTTPS traffic
-      FromPort: 443
-      GroupId: 
-        Ref: DefaultNetwork
-      IpProtocol: TCP
-      ToPort: 443
   DefaultNetwork:
     Properties:
       GroupDescription: mock-interviewer-and-job-application-database Security Group
@@ -306,20 +292,6 @@ Resources:
       Protocol: TCP
     Type: AWS::ElasticLoadBalancingV2::Listener
   
-  FrontendHTTPSListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      LoadBalancerArn:
-        Ref: LoadBalancer
-      Port: 443
-      Protocol: TLS
-      Certificates:
-        - CertificateArn: 
-            Ref: AwsAcmCertificate
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: 
-            Ref: FrontendTCP3000TargetGroup
 
 
   FrontendTCP3000TargetGroup:
@@ -412,18 +384,6 @@ Resources:
         Value: mock-interviewer-and-job-application-database
       Type: network
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-  LoadBalancerDNSRecord:
-    Type: 'AWS::Route53::RecordSet'
-    Properties:
-      HostedZoneId: 'Z07579781BIYS8393SNCD' # Your Route 53 Hosted Zone ID
-      Name: 'justinming765.site.' # Ensure the trailing dot
-      Type: 'A'
-      AliasTarget:
-        DNSName:
-          Fn::GetAtt: [LoadBalancer, DNSName] # Get the DNS name of the NLB
-        HostedZoneId:
-          Fn::GetAtt: [LoadBalancer, CanonicalHostedZoneID] # Get the hosted zone ID of the NLB
-
   LogGroup:
     Properties:
       LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
