@@ -397,6 +397,7 @@ Resources:
       - Key: com.docker.compose.service
         Value: frontend
     Type: AWS::IAM::Role
+
     
   LoadBalancer:
     Properties:
