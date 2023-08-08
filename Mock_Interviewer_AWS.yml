@@ -202,6 +202,7 @@ Resources:
       ToPort: 5000
     Type: AWS::EC2::SecurityGroupIngress
     
+    
   LoadBalancerIngress443:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -217,7 +218,6 @@ Resources:
       GroupDescription: mock-interviewer-and-job-application-database Security Group
         for default network
       Tags:
-      
       - Key: com.docker.compose.project
         Value: mock-interviewer-and-job-application-database
       - Key: com.docker.compose.network
