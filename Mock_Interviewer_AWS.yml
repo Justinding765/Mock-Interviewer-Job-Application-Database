@@ -466,9 +466,31 @@ Resources:
           FROM: justinding7575@gmail.com
           TO: justinding7575@gmail.com
 
-Outputs:
-  LoadBalancerArn:
-    Description: The ARN of the Load Balancer
-    Value: !Ref LoadBalancer
-    Export:
-      Name: LoadBalancerArn
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref YourLambdaFunction
+      Action: 'lambda:InvokeFunction'
+      Principal: 'events.amazonaws.com'
+
+  CodePipelineEventRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: 'Trigger for My Lambda Function based on CodePipeline Events'
+      EventPattern:
+        source:
+          - "aws.codepipeline"
+        detail-type:
+          - "CodePipeline Action Execution State Change"
+        detail:
+          stage:
+            - "Deploy"
+          action:
+            - "Deploy"
+          state:
+            - "SUCCEEDED"
+      Targets:
+        - 
+          Arn: !GetAtt YourLambdaFunction.Arn
+          Id: 'TargetId1234'
+

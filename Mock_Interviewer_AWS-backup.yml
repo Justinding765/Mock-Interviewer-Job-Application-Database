@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
+
   AwsAcmCertificate:
     Type: 'AWS::CertificateManager::Certificate'
     Properties: 
@@ -165,6 +166,8 @@ Resources:
       - Key: com.docker.compose.service
         Value: backend
     Type: AWS::IAM::Role
+    
+
   CloudMap:
     Properties:
       Description: Service Map for Docker Compose project mock-interviewer-and-job-application-database
@@ -188,6 +191,7 @@ Resources:
       IpProtocol: TCP
       ToPort: 3000
     Type: AWS::EC2::SecurityGroupIngress
+
   Default5000Ingress:
     Properties:
       CidrIp: 0.0.0.0/0
@@ -198,6 +202,16 @@ Resources:
       IpProtocol: TCP
       ToPort: 5000
     Type: AWS::EC2::SecurityGroupIngress
+  LoadBalancerIngress443:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: Allow HTTPS traffic
+      FromPort: 443
+      GroupId: 
+        Ref: DefaultNetwork
+      IpProtocol: TCP
+      ToPort: 443
   DefaultNetwork:
     Properties:
       GroupDescription: mock-interviewer-and-job-application-database Security Group
@@ -292,6 +306,20 @@ Resources:
       Protocol: TCP
     Type: AWS::ElasticLoadBalancingV2::Listener
   
+  FrontendHTTPSListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn:
+        Ref: LoadBalancer
+      Port: 443
+      Protocol: TLS
+      Certificates:
+        - CertificateArn: 
+            Ref: AwsAcmCertificate
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: 
+            Ref: FrontendTCP3000TargetGroup
 
 
   FrontendTCP3000TargetGroup:
@@ -369,6 +397,7 @@ Resources:
       - Key: com.docker.compose.service
         Value: frontend
     Type: AWS::IAM::Role
+
   LoadBalancer:
     Properties:
       LoadBalancerAttributes:
@@ -384,7 +413,62 @@ Resources:
         Value: mock-interviewer-and-job-application-database
       Type: network
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  LoadBalancerDNSRecord:
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      HostedZoneId: 'Z07579781BIYS8393SNCD' # Your Route 53 Hosted Zone ID
+      Name: 'justinming765.site.' # Ensure the trailing dot
+      Type: 'A'
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt: [LoadBalancer, DNSName] # Get the DNS name of the NLB
+        HostedZoneId:
+          Fn::GetAtt: [LoadBalancer, CanonicalHostedZoneID] # Get the hosted zone ID of the NLB
   LogGroup:
     Properties:
       LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
     Type: AWS::Logs::LogGroup
+  
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - ses:SendEmail
+              Resource: "*"
+
+  YourLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda_handler.lambda_handler  # Specify your file name and function name
+      Runtime: python3.8
+      Role: arn:aws:iam::332034570108:role/service-role/emailSender-role-p0or8wu6
+      Code:
+        S3Bucket: lambda-functions765
+        S3Key: email_sender.zip
+      Environment:
+        Variables:
+          LOAD_BALANCER_ARN: !Ref LoadBalancer
+          FROM: justinding7575@gmail.com
+          TO: justinding7575@gmail.com
+
+Outputs:
+  LoadBalancerArn:
+    Description: The ARN of the Load Balancer
+    Value: !Ref LoadBalancer
+    Export:
+      Name: LoadBalancerArn
