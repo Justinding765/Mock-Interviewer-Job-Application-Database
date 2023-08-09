@@ -25,6 +25,7 @@ phases:
       - docker push $FRONTEND_IMAGE
       - echo "Pushing backend Docker image to Docker Hub..."
       - docker push $BACKEND_IMAGE
+      - cat Mock_Interviewer_AWS.yml
 
   post_build:
     commands:
