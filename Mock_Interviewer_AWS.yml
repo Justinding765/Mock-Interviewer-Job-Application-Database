@@ -424,8 +424,23 @@ Resources:
           Fn::GetAtt: [LoadBalancer, DNSName] # Get the DNS name of the NLB
         HostedZoneId:
           Fn::GetAtt: [LoadBalancer, CanonicalHostedZoneID] # Get the hosted zone ID of the NLB
+  YourLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      # ... other properties ...
+      Environment:
+        Variables:
+          LOAD_BALANCER_ARN: !Ref LoadBalancer
+
 
   LogGroup:
     Properties:
       LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
     Type: AWS::Logs::LogGroup
+
+  Outputs:
+    LoadBalancerArn:
+      Description: The ARN of the Load Balancer
+      Value: !Ref LoadBalancer
+      Export:
+        Name: LoadBalancerArn
