@@ -472,7 +472,6 @@ Resources:
       Action: 'lambda:InvokeFunction'
       Principal: 'events.amazonaws.com'
 
-
   CodePipelineEventRule:
     Type: 'AWS::Events::Rule'
     Properties:
