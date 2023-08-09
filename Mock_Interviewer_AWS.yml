@@ -438,9 +438,9 @@ Resources:
       LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
     Type: AWS::Logs::LogGroup
 
-  Outputs:
-    LoadBalancerArn:
-      Description: The ARN of the Load Balancer
-      Value: !Ref LoadBalancer
-      Export:
-        Name: LoadBalancerArn
+Outputs:
+  LoadBalancerArn:
+    Description: The ARN of the Load Balancer
+    Value: !Ref LoadBalancer
+    Export:
+      Name: LoadBalancerArn
