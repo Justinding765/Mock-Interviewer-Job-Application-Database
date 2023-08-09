@@ -472,10 +472,11 @@ Resources:
       Action: 'lambda:InvokeFunction'
       Principal: 'events.amazonaws.com'
 
+
   CodePipelineEventRule:
     Type: 'AWS::Events::Rule'
     Properties:
-      Description: 'Trigger for My Lambda Function based on CodePipeline Events'
+      Description: 'Trigger for my Lambda Function based on CodePipeline Events'
       EventPattern:
         source:
           - "aws.codepipeline"
