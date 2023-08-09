@@ -424,19 +424,47 @@ Resources:
           Fn::GetAtt: [LoadBalancer, DNSName] # Get the DNS name of the NLB
         HostedZoneId:
           Fn::GetAtt: [LoadBalancer, CanonicalHostedZoneID] # Get the hosted zone ID of the NLB
-  YourLambdaFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      # ... other properties ...
-      Environment:
-        Variables:
-          LOAD_BALANCER_ARN: !Ref LoadBalancer
-
-
   LogGroup:
     Properties:
       LogGroupName: /docker-compose/mock-interviewer-and-job-application-database
     Type: AWS::Logs::LogGroup
+  
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - ses:SendEmail
+              Resource: "*"
+
+  YourLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: lambda_handler.lambda_handler  # Specify your file name and function name
+      Runtime: python3.8
+      Role: arn:aws:iam::332034570108:role/emailSender-role-p0or8wu6
+      Code:
+        S3Bucket: lambda-functions765
+        S3Key: email_sender.zip
+      Environment:
+        Variables:
+          LOAD_BALANCER_ARN: !Ref LoadBalancer
+          FROM: justinding7575@gmail.com
+          TO: justinding7575@gmail.com
 
 Outputs:
   LoadBalancerArn:
