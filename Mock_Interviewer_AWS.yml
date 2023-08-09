@@ -456,7 +456,7 @@ Resources:
     Properties:
       Handler: lambda_handler.lambda_handler  # Specify your file name and function name
       Runtime: python3.8
-      Role: arn:aws:iam::332034570108:role/emailSender-role-p0or8wu6
+      Role: arn:aws:iam::332034570108:role/service-role/emailSender-role-p0or8wu6
       Code:
         S3Bucket: lambda-functions765
         S3Key: email_sender.zip
