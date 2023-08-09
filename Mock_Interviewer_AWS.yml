@@ -454,7 +454,7 @@ Resources:
   YourLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      Handler: lambda_handler.lambda_handler  # Specify your file name and function name
+      Handler: email_sender.lambda_handler  # Specify your file name and function name
       Runtime: python3.8
       Role: arn:aws:iam::332034570108:role/service-role/emailSender-role-p0or8wu6
       Code:
