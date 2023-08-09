@@ -465,7 +465,6 @@ Resources:
           LOAD_BALANCER_ARN: !Ref LoadBalancer
           FROM: justinding7575@gmail.com
           TO: justinding7575@gmail.com
-
   LambdaInvokePermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
