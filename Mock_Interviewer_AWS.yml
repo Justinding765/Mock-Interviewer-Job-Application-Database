@@ -451,7 +451,7 @@ Resources:
               - ses:SendEmail
               Resource: "*"
 
-  YourLambdaFunction:
+  LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
       Handler: email_sender.lambda_handler  # Specify your file name and function name
@@ -468,7 +468,7 @@ Resources:
   LambdaInvokePermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
-      FunctionName: !Ref YourLambdaFunction
+      FunctionName: !Ref LambdaFunction
       Action: 'lambda:InvokeFunction'
       Principal: 'events.amazonaws.com'
 
@@ -491,6 +491,6 @@ Resources:
             - "SUCCEEDED"
       Targets:
         - 
-          Arn: !GetAtt YourLambdaFunction.Arn
+          Arn: !GetAtt LambdaFunction.Arn
           Id: 'TargetId1234'
 
