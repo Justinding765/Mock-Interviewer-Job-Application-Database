@@ -12,7 +12,7 @@ const Home = () =>{
             </section>
             <section className="Features">
                 <Container >
-                    <h1>Features!</h1><br/>
+                    <h1>Cool Features!</h1><br/>
                     <Row >
                     <Col md={3} className="Feature">
                         <h2 >Mock Interviews</h2>
