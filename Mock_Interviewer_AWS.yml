@@ -122,7 +122,7 @@ Resources:
         - Name: PORT
           Value: "5000"
         Essential: true
-        Image: docker.io/justinding765/interviewer:backend
+        Image: docker.io/justinding765/interviewer:backend:latest
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
@@ -353,7 +353,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Frontend_ResolvConf_InitContainer
         Essential: true
-        Image: docker.io/justinding765/interviewer:frontend
+        Image: docker.io/justinding765/interviewer:frontend:latest
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs

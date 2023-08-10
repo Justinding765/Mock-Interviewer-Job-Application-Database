@@ -69,7 +69,7 @@ const Popup = ({ handleClose, handleData}) => {
         <Row className="justify-content-center">
           <Col md={6}>
             <Form className="custom-form" onSubmit={handleSubmit}>
-              <h1>Genearte Interview!</h1>          
+              <h1>Generate Interview!</h1>          
 
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Interview Title</Form.Label>
