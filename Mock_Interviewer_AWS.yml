@@ -7,8 +7,8 @@ Resources:
       DomainName: 'justinming765.site' # Your primary domain name
       DomainValidationOptions: 
         - DomainName: 'justinming765.site' # Domain to be validated
-          HostedZoneId: 'Z07579781BIYS8393SNCD'
-      # Route 53 Hosted Zone ID
+          HostedZoneId: 'Z02481383MO1EQEROD4D3'
+      # Route 53 Hosted Zone ID 
       SubjectAlternativeNames: 
         - '*.justinming765.site'
       ValidationMethod: 'DNS'
@@ -122,7 +122,7 @@ Resources:
         - Name: PORT
           Value: "5000"
         Essential: true
-        Image: docker.io/justinding765/interviewer:backend:latest
+        Image: docker.io/justinding765/interviewer:backend
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
@@ -353,7 +353,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Frontend_ResolvConf_InitContainer
         Essential: true
-        Image: docker.io/justinding765/interviewer:frontend:latest
+        Image: docker.io/justinding765/interviewer:frontend
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
@@ -416,7 +416,7 @@ Resources:
   LoadBalancerDNSRecord:
     Type: 'AWS::Route53::RecordSet'
     Properties:
-      HostedZoneId: 'Z07579781BIYS8393SNCD' # Your Route 53 Hosted Zone ID
+      HostedZoneId: 'Z02481383MO1EQEROD4D3' # Your Route 53 Hosted Zone ID
       Name: 'justinming765.site.' # Ensure the trailing dot
       Type: 'A'
       AliasTarget:

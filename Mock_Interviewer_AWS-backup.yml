@@ -7,7 +7,7 @@ Resources:
       DomainName: 'justinming765.site' # Your primary domain name
       DomainValidationOptions: 
         - DomainName: 'justinming765.site' # Domain to be validated
-          HostedZoneId: 'Z07579781BIYS8393SNCD'
+          HostedZoneId: 'Z02481383MO1EQEROD4D3'
       # Route 53 Hosted Zone ID
       SubjectAlternativeNames: 
         - '*.justinming765.site'
