@@ -130,7 +130,7 @@ Resources:
         - Name: PORT
           Value: "5000"
         Essential: true
-        Image: !Sub "docker.io/justinding765/backend:${BackendImageVersion}"
+        Image: !Sub "docker.io/${BackendImageVersion}"
 
         LinuxParameters: {}
         LogConfiguration:
@@ -362,7 +362,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Frontend_ResolvConf_InitContainer
         Essential: true
-        Image: !Sub "docker.io/justinding765/frontend:${FrontendImageVersion}"
+        Image: !Sub "docker.io/${FrontendImageVersion}"
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
