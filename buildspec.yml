@@ -12,7 +12,7 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "testing ${CODEBUILD_RESOLVED_SOURCE_VERSION} $FRONTEND_IMAGE"
+      - echo "testing ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${FRONTEND_IMAGE}"
       - echo "Logging in to Docker Hub..."
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - echo "Building frontend Docker image..."
@@ -23,9 +23,9 @@ phases:
   build:
     commands:
       - echo "Pushing frontend Docker image to Docker Hub..."
-      - docker push $FRONTEND_IMAGE
+      - docker push $FRONTEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION}
       - echo "Pushing backend Docker image to Docker Hub..."
-      - docker push $BACKEND_IMAGE
+      - docker push $BACKEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION}
       - echo "{\"BackendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"FrontendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > parameters.json
       - cat parameters.json
   post_build:
