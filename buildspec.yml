@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    FRONTEND_IMAGE: "justinding765/frontend:latest"
-    BACKEND_IMAGE: "justinding765/backend:latest"
+    FRONTEND_IMAGE: "justinding765/frontend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
+    BACKEND_IMAGE: "justinding765/backend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
   # Use 'secrets-manager' to store your Docker Hub credentials securely.
   secrets-manager:
     DOCKERHUB_USERNAME: DockerHubCredentials:username
@@ -25,8 +25,8 @@ phases:
       - docker push $FRONTEND_IMAGE
       - echo "Pushing backend Docker image to Docker Hub..."
       - docker push $BACKEND_IMAGE
-      - cat Mock_Interviewer_AWS.yml
-
+      - echo "{\"BackendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"FrontendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > parameters.json
+      - cat parameters.json
   post_build:
     commands:
       - echo "Build and push completed."
@@ -34,3 +34,5 @@ phases:
 artifacts:
   files:
     - Mock_Interviewer_AWS.yml
+    - parameters.json
+

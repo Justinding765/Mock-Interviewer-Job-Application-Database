@@ -1,4 +1,12 @@
 AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  BackendImageVersion:
+    Type: String
+    Description: The version of the backend Docker image
+  FrontendImageVersion:
+    Type: String
+    Description: The version of the frontend Docker image
+
 Resources:
 
   AwsAcmCertificate:
@@ -122,7 +130,8 @@ Resources:
         - Name: PORT
           Value: "5000"
         Essential: true
-        Image: docker.io/justinding765/backend:latest
+        Image: !Sub "docker.io/justinding765/backend:${BackendImageVersion}"
+
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
@@ -353,7 +362,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Frontend_ResolvConf_InitContainer
         Essential: true
-        Image: docker.io/justinding765/frontend:latest
+        Image: !Sub "docker.io/justinding765/frontend:${FrontendImageVersion}"
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
