@@ -12,7 +12,7 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "testing $FRONTEND_IMAGE"
+      - echo "testing ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${FRONTEND_IMAGE}"
       - echo "Logging in to Docker Hub..."
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - echo "Building frontend Docker image..."
