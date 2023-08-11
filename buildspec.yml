@@ -25,7 +25,7 @@ phases:
       - docker push $FRONTEND_IMAGE
       - echo "Pushing backend Docker image to Docker Hub..."
       - docker push $BACKEND_IMAGE
-      - echo "{\"BackendImageVersion\":\"$FRONTEND_IMAGE\",\"FrontendImageVersion\":\"$BACKEND_IMAGE\"}" > parameters.json
+      - echo "{\"BackendImageVersion\":\"$BACKEND_IMAGE\",\"FrontendImageVersion\":\"$FRONTEND_IMAGE\"}" > parameters.json
       - cat parameters.json
   post_build:
     commands:
