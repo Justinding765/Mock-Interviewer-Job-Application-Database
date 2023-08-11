@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    FRONTEND_IMAGE: "justinding765/interviewer:frontend"
-    BACKEND_IMAGE: "justinding765/interviewer:backend"
+    FRONTEND_IMAGE: "justinding765/frontend:latest"
+    BACKEND_IMAGE: "justinding765/backend:latest"
   # Use 'secrets-manager' to store your Docker Hub credentials securely.
   secrets-manager:
     DOCKERHUB_USERNAME: DockerHubCredentials:username
