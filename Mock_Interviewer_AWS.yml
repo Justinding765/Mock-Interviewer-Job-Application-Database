@@ -353,7 +353,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Frontend_ResolvConf_InitContainer
         Essential: true
-        Image: docker.io/justinding765/interviewer:frontend
+        Image: docker.io/justinding765/interviewer:frontend:latest
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
