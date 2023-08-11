@@ -14,7 +14,7 @@ phases:
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - export FRONTEND_IMAGE="justinding765/frontend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - export BACKEND_IMAGE="justinding765/backend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
-
+      - echo $FRONTEND_IMAGE
       - echo "Building frontend Docker image..."
       - docker build -t $FRONTEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION} ./frontend
       - echo "Building backend Docker image..."
