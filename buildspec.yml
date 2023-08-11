@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    FRONTEND_IMAGE: "justinding765/frontend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
-    BACKEND_IMAGE: "justinding765/backend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
+    FRONTEND_IMAGE: "justinding765/frontend:"
+    BACKEND_IMAGE: "justinding765/backend:"
   # Use 'secrets-manager' to store your Docker Hub credentials securely.
   secrets-manager:
     DOCKERHUB_USERNAME: DockerHubCredentials:username
@@ -12,13 +12,13 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "testing ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${FRONTEND_IMAGE}"
+      - echo "testing ${CODEBUILD_RESOLVED_SOURCE_VERSION} $FRONTEND_IMAGE"
       - echo "Logging in to Docker Hub..."
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - echo "Building frontend Docker image..."
-      - docker build -t $FRONTEND_IMAGE ./frontend
+      - docker build -t $FRONTEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION} ./frontend
       - echo "Building backend Docker image..."
-      - docker build -t $BACKEND_IMAGE ./backend
+      - docker build -t $BACKEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION} ./backend
 
   build:
     commands:
