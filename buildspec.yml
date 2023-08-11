@@ -14,18 +14,17 @@ phases:
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - export FRONTEND_IMAGE="justinding765/frontend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
       - export BACKEND_IMAGE="justinding765/backend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
-      - echo $FRONTEND_IMAGE
       - echo "Building frontend Docker image..."
-      - docker build -t $FRONTEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION} ./frontend
+      - docker build -t $FRONTEND_IMAGE ./frontend
       - echo "Building backend Docker image..."
-      - docker build -t $BACKEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION} ./backend
+      - docker build -t $BACKEND_IMAGE ./backend
 
   build:
     commands:
       - echo "Pushing frontend Docker image to Docker Hub..."
-      - docker push $FRONTEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - docker push $FRONTEND_IMAGE
       - echo "Pushing backend Docker image to Docker Hub..."
-      - docker push $BACKEND_IMAGE${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - docker push $BACKEND_IMAGE
       - echo "{\"BackendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"FrontendImageVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > parameters.json
       - cat parameters.json
   post_build:
