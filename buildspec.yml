@@ -18,6 +18,8 @@ phases:
       - docker build -t $FRONTEND_IMAGE ./frontend
       - echo "Building backend Docker image..."
       - docker build -t $BACKEND_IMAGE ./backend
+      - echo "Downloading Mock_Interviewer_AWS.yml from S3..."
+      - aws s3 cp s3://templates-765/Mock_Interviewer_AWS.yml .
 
   build:
     commands:
