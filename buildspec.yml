@@ -9,7 +9,6 @@ env:
 phases:
   pre_build:
     commands:
-
       - echo "Logging in to Docker Hub..."
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
       - export FRONTEND_IMAGE="justinding765/frontend:${CODEBUILD_RESOLVED_SOURCE_VERSION}"
