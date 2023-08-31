@@ -1,14 +1,14 @@
 version: '3.3'
 services:
-  frontend:
+  frontend-service:
     build:
       context: ./frontend
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      - backend-service
 
-  backend:
+  backend-service:
     build:
       context: ./backend
     ports:
