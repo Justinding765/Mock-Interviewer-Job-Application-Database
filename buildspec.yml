@@ -6,7 +6,6 @@ env:
     DOCKERHUB_USERNAME: DockerHubCredentials:username
     DOCKERHUB_PASSWORD: DockerHubCredentials:password
 
-
 phases:
   pre_build:
     commands:
