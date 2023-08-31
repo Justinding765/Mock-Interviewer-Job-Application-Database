@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1  # Number of desired replicas/pods
+  selector:
+    matchLabels:
+      app: backend  # Label to match with pods
+  template:
+    metadata:
+      labels:
+        app: backend  # Label for pods
+    spec:
+      containers:
+        - name: backend-container
+          image: justinding765/backend:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+          - configMapRef:
+              name: my-config        

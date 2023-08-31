@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1  # Number of desired replicas/pods
+  selector:
+    matchLabels:
+      app: frontend  # Label to match with pods
+  template:
+    metadata:
+      labels:
+        app: frontend  # Label for pods
+    spec:
+      containers:
+        - name: frontend-container
+          image: justinding765/frontend:latest
+          ports:
+            - containerPort: 3000
+
